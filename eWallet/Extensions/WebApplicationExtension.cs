@@ -28,7 +28,7 @@ public class RoleInitializer
 {
     public static async Task InitializeAsync(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager)
     {
-        string ownerEmail = "sarvar@solid.uz";
+        string ownerEmail = "sarvar@solid-code.uz";
         string ownerPassword = "zaq1xsw2cde3";
 
         var roles = new Dictionary<string, string>()

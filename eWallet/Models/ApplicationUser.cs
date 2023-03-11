@@ -4,7 +4,7 @@ using NullGuard;
 namespace eWallet.Models;
 
 public class ApplicationUser : IdentityUser
-{
+{    
     [AllowNull]
     public string? FirstName { get; set; }
     [AllowNull]

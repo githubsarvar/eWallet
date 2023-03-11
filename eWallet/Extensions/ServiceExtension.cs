@@ -36,13 +36,13 @@ public static class ServiceExtension
 
     public static IServiceCollection AddMyIdentity(this IServiceCollection Services) 
     {
-        Services.AddIdentity<ApplicationUser, ApplicationRole>(_ =>
+        Services.AddIdentity<ApplicationUser, ApplicationRole>(x =>
         {
-            _.Password.RequiredLength = 6;
-            _.Password.RequireNonAlphanumeric = false;
-            _.Password.RequireLowercase = false;
-            _.Password.RequireUppercase = false;
-            _.Password.RequireDigit = false;
+            x.Password.RequiredLength = 6;
+            x.Password.RequireNonAlphanumeric = false;
+            x.Password.RequireLowercase = false;
+            x.Password.RequireUppercase = false;
+            x.Password.RequireDigit = false;
         })
          .AddRoles<ApplicationRole>()
          .AddRoleManager<RoleManager<ApplicationRole>>()
