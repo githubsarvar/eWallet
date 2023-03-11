@@ -12,20 +12,20 @@ namespace eWallet.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController : ControllerBase
+public class AccountsController : ControllerBase
 {
 
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IConfiguration _configuration;
 
-    public AuthController(IConfiguration configuration, UserManager<ApplicationUser> userManager)
+    public AccountsController(IConfiguration configuration, UserManager<ApplicationUser> userManager)
     {
         this._userManager = userManager;
         this._configuration = configuration;
     }
 
     [HttpPost]
-    [Route("login")]
+    [Route("Login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestDTO  loginRequest)
     {
         var user = await _userManager.FindByNameAsync(loginRequest.UserName);
@@ -40,6 +40,7 @@ public class AuthController : ControllerBase
     }
     private string GenerateJwtToken(ApplicationUser user)
     {
+        IEnumerable<string> roles = _userManager.GetRolesAsync(user).GetAwaiter().GetResult();
         var claims = new List<Claim>
         {
             new Claim(JwtRegisteredClaimNames.Sub, user.Id),
@@ -47,16 +48,41 @@ public class AuthController : ControllerBase
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
+        foreach (var role in roles)
+            claims.Add(new Claim(ClaimTypes.Role, role));
+
         var creds = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Vars.TheSecretKey)), SecurityAlgorithms.HmacSha256);
         var expires = DateTime.Now.AddDays(Convert.ToDouble(_configuration["AccessConfiguration:ExpireDays"]));
         var token = new JwtSecurityToken(
-            _configuration["AccessConfiguration:Issuer"],
-            _configuration["AccessConfiguration:Audience"],
-            claims,
-            expires: expires,
-            signingCredentials: creds
-        );
+                        issuer: _configuration["AccessConfiguration:Issuer"],
+                        audience: _configuration["AccessConfiguration:Audience"],
+                        expires: expires,
+                        claims: claims,
+                        signingCredentials: creds
+                    );
+        
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
+    [HttpPost]
+    [Route("Create")]
+    public async Task<IActionResult> Create([FromBody] CreateUserRequestDTO createUser)
+    {
+        var user = new ApplicationUser
+        {
+            UserName = createUser.UserName,
+            Email = createUser.Email,
+            FirstName = createUser.FirstName,
+            LastName = createUser.LastName,
+            PhoneNumber = createUser.PhoneNumber
+        };
+
+        var result = await _userManager.CreateAsync(user, createUser.Password);
+
+        if (!result.Succeeded)
+            return BadRequest(result.Errors);
+
+        return Ok();
+    }
+
 }

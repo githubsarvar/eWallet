@@ -25,7 +25,7 @@ namespace eWallet.Services
             var claimsIdentity = (ClaimsIdentity)_httpContextAccessor.HttpContext.User.Identity;
             Claim maybeClaim = claimsIdentity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
 
-            return _userManager.FindByNameAsync(maybeClaim.Value).GetAwaiter().GetResult();
+            return _userManager.FindByIdAsync(maybeClaim.Value).GetAwaiter().GetResult();
 
         }        
     }
