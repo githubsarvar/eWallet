@@ -1,10 +1,11 @@
-﻿using eWallet.Models;
+﻿using eWallet.Configurations;
+using eWallet.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace eWallet
 {
-    public class WalletDbContext: IdentityDbContext<ApplicationUser, ApplicationRole, string>
+    public class WalletDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
         public WalletDbContext() : base()
         {
@@ -18,8 +19,16 @@ namespace eWallet
         }
 
 
-        
-        public DbSet<Transaction> Transactions { get; set; }        
+
+        public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
+
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfiguration(new WalletConfiguration());
+            modelBuilder.ApplyConfiguration(new TransactionConfiguration());
+        }
     }
 }

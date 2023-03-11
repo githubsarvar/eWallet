@@ -5,9 +5,9 @@ namespace eWallet.Infrastructure;
 public class Money : ValueObject<Money>
 {
     public decimal Amount { get; }
-    public Currency Currency { get; }
+    public string Currency { get; }
 
-    public Money(decimal amount, Currency currency)
+    public Money(decimal amount, string currency)
     {
         Amount = amount;
         Currency = currency;
