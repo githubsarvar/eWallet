@@ -26,7 +26,7 @@ public class AccountsController : ControllerBase
 
     [HttpPost]
     [Route("Login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequestDTO  loginRequest)
+    public async Task<IActionResult> Login([FromBody] LoginRequest  loginRequest)
     {
         var user = await _userManager.FindByNameAsync(loginRequest.UserName);
         if (user == null)        
@@ -66,23 +66,35 @@ public class AccountsController : ControllerBase
     }
     [HttpPost]
     [Route("Create")]
-    public async Task<IActionResult> Create([FromBody] CreateUserRequestDTO createUser)
+    public async Task<IActionResult> Create([FromBody] CreateUserRequest createUser)
     {
-        var user = new ApplicationUser
+        if(!ModelState.IsValid)
+            return BadRequest(ModelState);
+
+        try
+        {           
+
+            var user = new ApplicationUser
+            {
+                UserName = createUser.UserName,
+                Email = createUser.Email,
+                FirstName = createUser.FirstName,
+                LastName = createUser.LastName,
+                PhoneNumber = createUser.PhoneNumber
+            };
+
+            var result = await _userManager.CreateAsync(user, createUser.Password);
+
+            if (!result.Succeeded)
+                return BadRequest(result.Errors);
+
+            return Ok();
+        }
+        catch (Exception)
         {
-            UserName = createUser.UserName,
-            Email = createUser.Email,
-            FirstName = createUser.FirstName,
-            LastName = createUser.LastName,
-            PhoneNumber = createUser.PhoneNumber
-        };
-
-        var result = await _userManager.CreateAsync(user, createUser.Password);
-
-        if (!result.Succeeded)
-            return BadRequest(result.Errors);
-
-        return Ok();
+            return BadRequest();
+        }
+        
     }
 
 }

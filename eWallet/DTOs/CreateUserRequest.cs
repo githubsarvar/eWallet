@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace eWallet.DTOs
 {
-    public class CreateUserRequestDTO
+    public class CreateUserRequest
     {
         [Required]
         public string FirstName { get; set; }

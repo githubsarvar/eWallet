@@ -12,7 +12,15 @@ public class ApplicationUser : IdentityUser
     public bool IsEmailConfirmed { get; set; } = false;
     [AllowNull]
     public string? PhoneNumber { get; set; }
+    public ApplicationUserStatus Status { get; set; }
 
     [AllowNull]
     public ICollection<Wallet> Wallets { get; set; }    
+}
+
+
+public enum ApplicationUserStatus
+{
+    UNIDENTIFIED,
+    IDENTIFIED    
 }

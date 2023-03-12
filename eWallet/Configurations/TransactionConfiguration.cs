@@ -16,6 +16,8 @@ public class TransactionConfiguration : BaseEntityConfiguration<Transaction>
             navigationBuilder.Property(x => x.Currency).HasColumnName("Currency");
         });        
         builder.Property(p => p.TransactionDate).HasDefaultValueSql("CURRENT_TIMESTAMP").IsRequired();
+        builder.Property(p => p.TransactionType).IsRequired();
+        builder.Property(p => p.Status).HasDefaultValue(TransactionStatus.New).IsRequired();
         
     }
 }

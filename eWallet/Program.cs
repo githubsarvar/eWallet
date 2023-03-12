@@ -1,6 +1,9 @@
 using eWallet;
+using eWallet.Events;
 using eWallet.Infrastructure;
+using eWallet.Rules;
 using eWallet.Services;
+using FlakeyBit.DigestAuthentication.AspNetCore;
 using FlakeyBit.DigestAuthentication.Implementation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -11,8 +14,8 @@ string CorsPolicyOrigins = "_CorsPolicyOrigins";
 builder.Services.AddMediatR(typeof(Program));
 
 builder.Services.AddScoped<IUsernameHashedSecretProvider, UsernameSecretProvider>();
-//builder.Services.AddAuthentication("Digest")
-  //      .AddDigestAuthentication(DigestAuthenticationConfiguration.Create("VerySecret", "some-realm", 60, true, 20));
+builder.Services.AddAuthentication("Digest")
+        .AddDigestAuthentication(DigestAuthenticationConfiguration.Create("VerySecret", "some-realm", 60, true, 20));
 
 builder.Services.AddMyIdentity();
 builder.Services.AddMyAuthentication(configuration);
@@ -20,8 +23,12 @@ builder.Services.AddMySwaggerGen();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<WalletDbContext>(option => option.UseNpgsql(configuration["ConnectionStrings:NpgsqlConnectionString"]));
 builder.Services.AddScoped<IUserProvider, UserProvider>();
-
+builder.Services.AddScoped<IWalletCharge, WalletCharge>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<INotificationHandler<RechargeTransactionCreatedEvent>, RechargeTransactionCreatedEventHandler>();
+
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

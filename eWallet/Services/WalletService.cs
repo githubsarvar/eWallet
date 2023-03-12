@@ -24,7 +24,7 @@ public class WalletService
         string hash = BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
 
         // Format the e-wallet number using the first 4 characters of the hash and the random number
-        string eWalletNumber = hash.Substring(0, 4) + "-" + randomNumber.ToString();
+        string eWalletNumber = hash.Substring(0, 4).ToUpper() + "-" + randomNumber.ToString();
 
         return eWalletNumber;
     }

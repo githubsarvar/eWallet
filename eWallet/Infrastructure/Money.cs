@@ -16,9 +16,18 @@ public class Money : ValueObject<Money>
     public Money Add(Money other)
     {
         if (Currency != other.Currency)
-        {
             throw new ArgumentException("Cannot add money with different currencies");
-        }
+        
         return new Money(Amount + other.Amount, Currency);
-    }    
+    }
+    
+    public bool GreaterThanOrEqual(Money other)
+    {
+        if (this.Currency != other.Currency)        
+            throw new ArgumentException("Cannot compare Money objects with different currencies");
+        
+
+        return  this.Amount >= other.Amount;
+    }
+
 }
